@@ -212,10 +212,8 @@ return totalActiveJiffies;
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() 
 {
-  return LinuxParser::Jiffies()-LinuxParser::ActiveJiffies();
-}
   
-  return (totalJiffies - processActiveJiffies);
+  return LinuxParser::Jiffies()-LinuxParser::ActiveJiffies();
 }
 
 // TODO: Read and return CPU utilization
