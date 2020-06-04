@@ -126,7 +126,7 @@ long LinuxParser::Jiffies() { return 0; }
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid  ) 
 {
-  std::string line,pid,state,comm;
+  std::string line,processId,state,comm;
   vector<long long int> jiffiesValue;
   int totalProc = -1;
   //number of skiiped values in the start of the file
@@ -149,8 +149,8 @@ long LinuxParser::ActiveJiffies(int pid  )
 
     std::getline(stream,line);
     linestream.str(line);
-    linestream>>pid>>comm>>state;
-    for(long long int value ; iss>>value)
+    linestream>>processId>>comm>>state;
+    for(long long int value ; linestream>>value;)
       jiffiesValue.push_back(value); 
  
     processActiveJiffies  = jiffiesValue[utime] + jiffiesValue[stime] + jiffiesValue[cutime] +jiffiesValue[cstime];
@@ -160,7 +160,7 @@ long LinuxParser::ActiveJiffies(int pid  )
 }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+//long LinuxParser::ActiveJiffies() { return 0; }
 
 // TODO: Read and return the number of idle jiffies for the system
 long LinuxParser::IdleJiffies() { return 0; }

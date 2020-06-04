@@ -7,9 +7,9 @@
 int main() {
   //System system;
   std::cout<<LinuxParser::ActiveJiffies(1)<<std::endl;  
-  std::cout<<LinuxParser::UpTime()<<std::endl;
-  std::cout<<LinuxParser::TotalProcesses()<<std::endl;
-  std::cout<<LinuxParser::MemoryUtilization()<<std::endl;
-  LinuxParser::CpuUtilization();
+  //std::cout<<LinuxParser::UpTime()<<std::endl;
+  //std::cout<<LinuxParser::TotalProcesses()<<std::endl;
+  //std::cout<<LinuxParser::MemoryUtilization()<<std::endl;
+ // LinuxParser::CpuUtilization();
   //NCursesDisplay::Display(system);
 }
