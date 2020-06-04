@@ -102,10 +102,10 @@ float LinuxParser::MemoryUtilization() {
   }
 
 // TODO: Read and return the system uptime
-long LinuxParser::UpTime() 
+long long int LinuxParser::UpTime() 
 {
   std::string line;
-  long uptime = -1;
+  long long int uptime = -1;
 
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if(stream.is_open())
@@ -120,7 +120,7 @@ long LinuxParser::UpTime()
  
 
 // TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies()
+long long int LinuxParser::Jiffies()
 {
   //get system process ids 
   //for each process git total jiffs
@@ -163,7 +163,7 @@ long LinuxParser::Jiffies()
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid) 
+long long int LinuxParser::ActiveJiffies(int pid) 
 {
   std::string line,processId,state,comm;
   vector<long long int> jiffiesValue;
@@ -199,9 +199,9 @@ long LinuxParser::ActiveJiffies(int pid)
 }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() 
+long long int LinuxParser::ActiveJiffies() 
 {
-long totalActiveJiffies = 0;
+long long int totalActiveJiffies = 0;
 vector<int> pids = LinuxParser::Pids();
 for(int pid : pids)
   totalActiveJiffies += LinuxParser::ActiveJiffies(pid);
@@ -210,9 +210,8 @@ return totalActiveJiffies;
 }
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() 
+long long int LinuxParser::IdleJiffies() 
 {
-  
   return LinuxParser::Jiffies()-LinuxParser::ActiveJiffies();
 }
 
@@ -266,7 +265,10 @@ int LinuxParser::TotalProcesses() {
  }
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses() 
+{
+
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
