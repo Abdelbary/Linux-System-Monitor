@@ -120,11 +120,50 @@ long LinuxParser::UpTime()
  
 
 // TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies()
+{
+  //get system process ids 
+  //for each process git total jiffs
+  //sum all the jiffs
+  //get all system process ids
+  vector<int> pids = LinuxParser::Pids();
+  std::string line,processId,state,comm;
+  int totalProc = -1;
+  //number of skiiped values in the start of the file
+  //pid , comm , state
+  int skipped_values = 3;
+
+  //position of the process user time and kernel time for the process
+  //and its children 
+  int utime = 13  - skipped_values;
+  int stime = 14  - skipped_values;
+  int cutime = 15 - skipped_values;
+  int cstime = 16 - skipped_values;
+   // active jiffies is the sum of [utime + stime + cutime + cstime]
+  long long int Jiffies;
+  for(int Id : pids)
+  {
+
+  std::ifstream stream(kProcDirectory + std::to_string(id) + kStatFilename);
+  std::istringstream linestream;
+  if(stream.is_open())
+  {
+    std::getline(stream,line);
+    linestream.str(line);
+    linestream>>processId>>comm>>state;
+    for(long long int value ; linestream>>value;)
+      Jiffies += value; 
+  }
+  
+  }
+  return Jiffies; 
+
+
+}
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid  ) 
+long LinuxParser::ActiveJiffies(int pid) 
 {
   std::string line,processId,state,comm;
   vector<long long int> jiffiesValue;
@@ -163,7 +202,45 @@ long LinuxParser::ActiveJiffies(int pid  )
 //long LinuxParser::ActiveJiffies() { return 0; }
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() 
+{
+  std::string line,processId,state,comm;
+  vector<long long int> jiffiesValue;
+  int totalProc = -1;
+  //number of skiiped values in the start of the file
+  //pid , comm , state
+  int skipped_values = 3;
+
+  //position of the process user time and kernel time for the process
+  //and its children 
+  int utime = 13  - skipped_values;
+  int stime = 14  - skipped_values;
+  int cutime = 15 - skipped_values;
+  int cstime = 16 - skipped_values;
+   // active jiffies is the sum of [utime + stime + cutime + cstime]
+  long long int processActiveJiffies;
+  long long int totalJiffies = 0;
+ 
+
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  std::istringstream linestream;
+  if(stream.is_open())
+  {
+
+    std::getline(stream,line);
+    linestream.str(line);
+    linestream>>processId>>comm>>state;
+    for(long long int value ; linestream>>value;)
+    {
+      jiffiesValue.push_back(value);
+      totalJiffies += value;
+    }
+ 
+    processActiveJiffies  = jiffiesValue[utime] + jiffiesValue[stime] + jiffiesValue[cutime] +jiffiesValue[cstime];
+  }
+  
+  return (totalJiffies - processActiveJiffies);
+}
 
 // TODO: Read and return CPU utilization
 vector<int> LinuxParser::CpuUtilization() { 
