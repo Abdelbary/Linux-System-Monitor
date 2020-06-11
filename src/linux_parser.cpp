@@ -346,8 +346,55 @@ string LinuxParser::Uid(int pid)
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) 
+{ 
+  string uid = LinuxParser::Uid(pid);
+  string line, key;
+  string username, dummy, user;
+  std::ifstream filestream(kPasswordPath);
+  if (filestream.is_open())
+  {
+    while (std::getline(filestream, line))
+    {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      linestream>> username >> dummy >> user;
+      if(user == uid)
+        return username;
+    }
+  }
+  return "NULL";
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long long int LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+long long int LinuxParser::UpTime(int pid) 
+{
+  long starttime{0};
+  long number;
+  string line, word;
+  vector<long> data;
+
+  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::replace(line.begin(), line.end(), '(', '_');
+    std::replace(line.begin(), line.end(), ')', '_');
+    std::replace(line.begin(), line.end(), '=', ' ');
+    std::replace(line.begin(), line.end(), '"', ' ');
+    std::istringstream linestream(line);
+  
+    for (int i=1; i<4; i++) { 
+        linestream >> word;
+        data.push_back(0);
+    }
+    for (int i=4; i<26; i++) { 
+        linestream >> number;
+        data.push_back(number);
+    }
+    //uptime is numberes at pos 22 and we r working with 0 indexed so pos is 21
+    starttime = data[22-1]; 
+  }
+
+  return starttime;
+}
