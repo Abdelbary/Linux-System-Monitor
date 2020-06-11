@@ -122,43 +122,7 @@ long long int LinuxParser::UpTime()
 // TODO: Read and return the number of jiffies for the system
 long long int LinuxParser::Jiffies()
 {
-  //get system process ids 
-  //for each process git total jiffs
-  //sum all the jiffs
-  //get all system process ids
-  vector<int> pids = LinuxParser::Pids();
-  std::string line,processId,state,comm;
-  int totalProc = -1;
-  //number of skiiped values in the start of the file
-  //pid , comm , state
-  int skipped_values = 3;
-
-  //position of the process user time and kernel time for the process
-  //and its children 
-  int utime = 13  - skipped_values;
-  int stime = 14  - skipped_values;
-  int cutime = 15 - skipped_values;
-  int cstime = 16 - skipped_values;
-   // active jiffies is the sum of [utime + stime + cutime + cstime]
-  long long int Jiffies;
-  for(int Id : pids)
-  {
-
-  std::ifstream stream(kProcDirectory + std::to_string(Id) + kStatFilename);
-  std::istringstream linestream;
-  if(stream.is_open())
-  {
-    std::getline(stream,line);
-    linestream.str(line);
-    linestream>>processId>>comm>>state;
-    for(long long int value ; linestream>>value;)
-      Jiffies += value; 
-  }
-  
-  }
-  return Jiffies; 
-
-
+  return  LinuxParser::ActiveJiffies() + LinuxParser::IdleJiffies(); 
 }
 
 // TODO: Read and return the number of active jiffies for a PID
@@ -192,7 +156,6 @@ long long int LinuxParser::ActiveJiffies(int pid)
     for(std::string value ; linestream>>value;)
       if(std::all_of(value.begin(),value.end(),isdigit))
       {
-        std::cout<<value<<std::endl;
         jiffiesValue.push_back(std::stoul(value.c_str())); 
 
       }
@@ -206,19 +169,22 @@ long long int LinuxParser::ActiveJiffies(int pid)
 // TODO: Read and return the number of active jiffies for the system
 long long int LinuxParser::ActiveJiffies() 
 {
-long long int totalActiveJiffies = 0;
-
-vector<int> pids = LinuxParser::Pids();
-for(int pid : pids)
-  totalActiveJiffies += LinuxParser::ActiveJiffies(pid);
-
-return totalActiveJiffies;
+vector<long long int> values = LinuxParser::CpuUtilization() ;
+  return ((values[kUser_]) +
+          (values[kNice_]) + 
+          (values[kSystem_]) + 
+          (values[kIdle_]) + 
+          (values[kSoftIRQ_]) + 
+          (values[kSteal_]) + 
+          (values[kGuest_]) + 
+          (values[kGuestNice_]));
 }
 
 // TODO: Read and return the number of idle jiffies for the system
 long long int LinuxParser::IdleJiffies() 
 {
-  return LinuxParser::Jiffies()-LinuxParser::ActiveJiffies();
+  vector<long long int> values = LinuxParser::CpuUtilization() ;
+  return ((values[kIdle_]) + (values[kIOwait_]));
 }
 
 // TODO: Read and return CPU utilization
