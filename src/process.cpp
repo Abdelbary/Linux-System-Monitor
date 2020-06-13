@@ -12,17 +12,10 @@ using std::to_string;
 using std::vector;
 
 // TODO: Return this process's ID
-<<<<<<< HEAD
-int Process::Pid() const { return this->pid}
-
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() const 
-=======
 int Process::Pid() { return this->pid_;}
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() const
->>>>>>> 2e325fce737c96a9abb52dd3f2fd739115ca3b02
 {
 
    
@@ -34,14 +27,10 @@ float Process::CpuUtilization() const
 }
 
 // TODO: Return the command that generated this process
-<<<<<<< HEAD
 string Process::Command() const
  {
       return LinuxParser::Command(this->pid);
  }
-=======
-string Process::Command() { return LinuxParser::Command(this->pid_); }
->>>>>>> 2e325fce737c96a9abb52dd3f2fd739115ca3b02
 
 // TODO: Return this process's memory utilization
 string Process::Ram() const 
