@@ -7,14 +7,15 @@
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() 
 {
-   float totalTime = LinuxParser::Jiffies();
-  float activeTime = LinuxParser::ActiveJiffies() ;
-  float result = 1.0 * (activeTime/totalTime);
+   vector<long long int> values = std::move(LinuxParser::CpuUtilization());
+   float totalTime = LinuxParser::Jiffies(values);
+  float activeTime = LinuxParser::ActiveJiffies(values) ;
   
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  //std::this_thread::sleep_for(std::chrono::seconds(1));
 
-  totalTime = LinuxParser::Jiffies() - totalTime;
-  activeTime = LinuxParser::ActiveJiffies() - activeTime;
+  //vector<long long int> v2 = std::move(LinuxParser::CpuUtilization());
+  //totalTime = LinuxParser::Jiffies(v2) - totalTime;
+  //activeTime = LinuxParser::ActiveJiffies(v2) - activeTime;
 
   return activeTime/totalTime;
 

@@ -22,7 +22,7 @@ float Process::CpuUtilization() const
     float processTimeInSec = Process::UpTime();
     float processActiveTimeInSec = (LinuxParser::ActiveJiffies(this->pid_)/ (float)sysconf(_SC_CLK_TCK));
 
-    float cpu_usage = 100.0*(processActiveTimeInSec/ processTimeInSec);
+    float cpu_usage = (processActiveTimeInSec/processTimeInSec);
 
 }
 

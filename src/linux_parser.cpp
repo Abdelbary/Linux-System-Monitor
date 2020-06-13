@@ -76,7 +76,6 @@ float LinuxParser::MemoryUtilization() {
   if(stream.is_open())
   {
     string key,line,alis;
-    int value;
     //get memtotal info
     std::getline(stream,line);
     std::istringstream linestream(line);
@@ -120,9 +119,12 @@ long long int LinuxParser::UpTime()
  
 
 // TODO: Read and return the number of jiffies for the system
-long long int LinuxParser::Jiffies()
+long long int LinuxParser::Jiffies(vector<long long int> const &values)
 {
-  return  LinuxParser::ActiveJiffies() + LinuxParser::IdleJiffies(); 
+  long long int jiffies = 0;
+  for(auto val : values)
+    jiffies += val; 
+  return jiffies;
 }
 
 // TODO: Read and return the number of active jiffies for a PID
@@ -131,7 +133,6 @@ long long int LinuxParser::ActiveJiffies(int pid)
 {
   std::string line,processId,state,comm;
   vector<long long int> jiffiesValue;
-  int totalProc = -1;
   //number of skiiped values in the start of the file
   //pid , comm , state
   int skipped_values = 3;
@@ -167,49 +168,43 @@ long long int LinuxParser::ActiveJiffies(int pid)
 }
 
 // TODO: Read and return the number of active jiffies for the system
-long long int LinuxParser::ActiveJiffies() 
+long long int LinuxParser::ActiveJiffies(vector<long long int> const & values) 
 {
-vector<long long int> values = LinuxParser::CpuUtilization() ;
   return ((values[kUser_]) +
           (values[kNice_]) + 
           (values[kSystem_]) + 
-          (values[kIdle_]) + 
+          (values[kIRQ_]) + 
           (values[kSoftIRQ_]) + 
           (values[kSteal_]) + 
           (values[kGuest_]) + 
-          (values[kGuestNice_]));
+          (values[kGuestNice_]+
+           (values[kIOwait_])));
 }
 
 // TODO: Read and return the number of idle jiffies for the system
-long long int LinuxParser::IdleJiffies() 
+long long int LinuxParser::IdleJiffies(vector<long long int> const &values) 
 {
-  vector<long long int> values = LinuxParser::CpuUtilization() ;
-  return ((values[kIdle_]) + (values[kIOwait_]));
+
+  return ((values[kIdle_]));
 }
 
 // TODO: Read and return CPU utilization
 vector<long long int> LinuxParser::CpuUtilization(){ 
-  std::string line;
-  std::string readSample;
-  vector<long long int> cpuUtil;
+   long user{0}, nice{0}, syst{0}, idle{0}, iowait{0}, irq{0}, softirq{0}, 
+         steal{0}, guest{0}, guest_nice{0};
+  string line, cpu;
   std::ifstream stream(kProcDirectory + kStatFilename);
-  //data about cpu utiliztaotion is tored in /proc/stat
-  //we are intersted in the first line where aggrigated cpu
-  //utiliztion is listed in 10 spereated numbers
-  if(stream.is_open())
-  {
-    std::getline(stream,line);
+  if (stream.is_open()) {
+    std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> readSample;
-    for(int i = 0 ; i  < 10 ; i++)
-    {
-      linestream >> readSample;
-      cpuUtil.push_back(std::stoll(readSample.c_str()));
-    }
-      
+    linestream >> cpu >> user >> nice >> syst >> idle
+               >> iowait >> irq >> softirq  
+               >> steal >> guest >> guest_nice;
   }
-
-  return cpuUtil;
+  vector<long long int> cpu_utili {user, nice, syst, idle,
+                                iowait, irq, softirq, steal,
+                                guest, guest_nice};
+  return cpu_utili;
    }
 
 
@@ -241,7 +236,6 @@ int LinuxParser::RunningProcesses()
 {
   std::string line,processId,state,comm;
   vector<long long int> jiffiesValue;
-  int totalProc = -1;
   vector<int> pids = LinuxParser::Pids();
   int runningProc =  0;
   for(int pid : pids)
@@ -254,7 +248,7 @@ int LinuxParser::RunningProcesses()
       std::getline(stream,line);
       linestream.str(line);
       linestream>>processId>>comm>>state; 
-      runningProc += (state == "S")?1:0;
+      runningProc += (state == "R")?1:0;
     }
   }
   return runningProc;
