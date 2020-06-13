@@ -12,7 +12,7 @@ using std::to_string;
 using std::vector;
 
 // TODO: Return this process's ID
-int Process::Pid() { return this->pid_;}
+int Process::Pid() const  { return this->pid_;}
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() const
@@ -41,7 +41,7 @@ string Process::Ram() const
 
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return LinuxParser::User(this->pid_); }
+string Process::User() const  { return LinuxParser::User(this->pid_); }
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() const
