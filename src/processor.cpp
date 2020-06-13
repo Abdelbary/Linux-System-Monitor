@@ -14,7 +14,7 @@ float Processor::Utilization()
   //std::this_thread::sleep_for(std::chrono::seconds(1));
 
   //vector<long long int> v2 = std::move(LinuxParser::CpuUtilization());
-  //totalTime = LinuxParser::Jiffies(v2) - totalTime;
+ // totalTime = LinuxParser::Jiffies(v2) - totalTime;
   //activeTime = LinuxParser::ActiveJiffies(v2) - activeTime;
 
   return activeTime/totalTime;

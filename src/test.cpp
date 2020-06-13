@@ -3,7 +3,7 @@
 #include "../include/linux_parser.h"
 #include <iostream>
 
-
+#if Debug
 int main() {
   //System system;
   std::cout<<LinuxParser::ActiveJiffies(1)<<std::endl;  
@@ -21,3 +21,4 @@ int main() {
  // LinuxParser::CpuUtilization();
   //NCursesDisplay::Display(system);
 }
+#endif
