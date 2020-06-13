@@ -12,10 +12,10 @@ using std::to_string;
 using std::vector;
 
 // TODO: Return this process's ID
-int Process::Pid() { return this->pid}
+int Process::Pid() const { return this->pid}
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() 
+float Process::CpuUtilization() const 
 {
 
    
@@ -27,10 +27,13 @@ float Process::CpuUtilization()
 }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(this->pid); }
+string Process::Command() const
+ {
+      return LinuxParser::Command(this->pid);
+ }
 
 // TODO: Return this process's memory utilization
-string Process::Ram() 
+string Process::Ram() const 
 {
     string mem_util_mb = to_string((int)((float) stol(LinuxParser::Ram(this->pid_), nullptr, 10) / 1024.0));
     return mem_util_mb;
@@ -41,7 +44,7 @@ string Process::Ram()
 string Process::User() { return LinuxParser::User(this->pid); }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() 
+long int Process::UpTime() const
 {
     //get the up time of the process
     //get the uptime of the system
