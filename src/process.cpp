@@ -29,7 +29,7 @@ float Process::CpuUtilization() const
 // TODO: Return the command that generated this process
 string Process::Command() const
  {
-      return LinuxParser::Command(this->pid);
+      return LinuxParser::Command(this->pid_);
  }
 
 // TODO: Return this process's memory utilization
