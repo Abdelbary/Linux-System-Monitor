@@ -20,4 +20,4 @@ This project uses [Make](https://www.gnu.org/software/make/). The Makefile has f
 
 ## Architecture
 
-![Architecture](images/arch.png)
+![Architecture](images/arch.PNG)
