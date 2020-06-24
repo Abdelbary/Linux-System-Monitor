@@ -1,5 +1,5 @@
 # CppND-System-Monitor
-linux operating system process managers from udacity c++ NanoDegree program.
+linux operating system process managers
 
 
 ![System Monitor](images/monitor.png)
